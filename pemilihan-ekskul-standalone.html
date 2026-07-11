@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilih Ekstrakurikuler Pendamping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c2b4a;
+    --ink-soft: #445071;
+    --paper: #f2f0e8;
+    --paper-card: #ffffff;
+    --gold: #c8952c;
+    --gold-soft: #f4e3c0;
+    --green: #2f7d5c;
+    --green-soft: #e1f0e8;
+    --red: #b5473a;
+    --red-soft: #f6e3e0;
+    --line: #d8d3c4;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Sans 3', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 28px 20px 80px;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 14px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  header .title-block .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 26px;
+    margin: 4px 0 0;
+    font-weight: 700;
+  }
+
+  .status-pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 6px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .name-bar {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .name-bar label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .name-bar select {
+    flex: 1;
+    min-width: 220px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .name-bar select:focus {
+    outline: 2px solid var(--gold);
+    outline-offset: 1px;
+  }
+
+  .your-pick {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .your-pick strong { color: var(--green); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: box-shadow .15s ease, border-color .15s ease;
+  }
+
+  .card.is-mine {
+    border-color: var(--green);
+    box-shadow: 0 0 0 1px var(--green);
+  }
+
+  .card.is-full:not(.is-mine) {
+    opacity: 0.72;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .card-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.25;
+  }
+
+  .card-desc {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-top: -4px;
+  }
+
+  .slots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .slot-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    flex-shrink: 0;
+  }
+
+  .slot-dot.filled { background: var(--ink); }
+  .slot-dot.filled.mine { background: var(--green); border-color: var(--green); }
+
+  .count-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .roster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 22px;
+  }
+
+  .chip {
+    font-size: 11.5px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px 9px;
+    color: var(--ink-soft);
+  }
+
+  .chip.mine {
+    background: var(--green-soft);
+    border-color: var(--green);
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .pick-btn {
+    margin-top: 4px;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    background: var(--ink);
+    color: var(--paper);
+    transition: transform .08s ease, background .15s ease;
+  }
+
+  .pick-btn:hover { transform: translateY(-1px); }
+  .pick-btn:active { transform: translateY(0); }
+
+  .pick-btn.mine {
+    background: var(--green);
+  }
+
+  .pick-btn.full {
+    background: var(--red-soft);
+    color: var(--red);
+    cursor: not-allowed;
+  }
+
+  .pick-btn.full:hover { transform: none; }
+
+  .pick-btn:disabled { opacity: 0.6; cursor: wait; }
+
+  .toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Source Sans 3', sans-serif;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+    z-index: 20;
+    max-width: 90vw;
+    text-align: center;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+  }
+
+  .toast.err { background: var(--red); }
+  .toast.ok { background: var(--green); }
+
+  .foot-note {
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    line-height: 1.6;
+  }
+
+  .loading-screen {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+
+  .admin-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+
+  .admin-toggle-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    cursor: pointer;
+  }
+
+  .admin-toggle-btn:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .admin-panel {
+    background: var(--paper-card);
+    border: 1.5px dashed var(--gold);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 22px;
+  }
+
+  .admin-panel.hidden { display: none; }
+
+  .admin-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .admin-panel-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .admin-logout-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 4px 9px;
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+
+  .admin-login {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .admin-login input {
+    flex: 1;
+    min-width: 180px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 11px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  .admin-login button {
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .admin-err {
+    color: var(--red);
+    font-size: 12.5px;
+    margin-top: 6px;
+  }
+
+  .admin-activity-block {
+    margin-bottom: 14px;
+  }
+
+  .admin-activity-block:last-child { margin-bottom: 0; }
+
+  .admin-activity-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    margin-bottom: 6px;
+  }
+
+  .admin-empty-row {
+    font-size: 12px;
+    color: var(--ink-soft);
+    padding: 4px 0;
+  }
+
+  .admin-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+
+  .admin-row:last-child { border-bottom: none; }
+
+  .admin-row-name {
+    flex: 1;
+    min-width: 140px;
+    font-size: 13px;
+  }
+
+  .admin-row select {
+    font-size: 12.5px;
+    padding: 5px 7px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: inherit;
+    background: var(--paper);
+  }
+
+  .admin-row .danger-btn {
+    background: var(--red-soft);
+    color: var(--red);
+    border: none;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .admin-row .danger-btn:hover { background: var(--red); color: #fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title-block">
+      <div class="eyebrow">Formulir Internal &middot; Kuota Terbatas</div>
+      <h1>Pilih Ekstrakurikuler Pendamping</h1>
+    </div>
+    <div class="status-pill" id="statusPill">memuat...</div>
+  </header>
+
+  <div class="admin-bar">
+    <button id="adminToggleBtn" class="admin-toggle-btn" type="button">Panel Admin</button>
+  </div>
+
+  <div id="adminPanel" class="admin-panel hidden"></div>
+
+  <div class="name-bar">
+    <label for="nameInput">Nama Anda</label>
+    <select id="nameInput">
+      <option value="" disabled selected>-- Pilih nama Anda --</option>
+    </select>
+    <div class="your-pick" id="yourPick"></div>
+  </div>
+
+  <div id="gridArea" class="loading-screen">Memuat data kegiatan...</div>
+
+  <div class="foot-note">
+    Setiap kegiatan hanya bisa didampingi oleh sejumlah pendamping terbatas (lihat titik kuota di tiap kartu). Kartu akan otomatis terkunci begitu kuota penuh. Anda hanya dapat memilih satu kegiatan &mdash; memilih kegiatan baru akan otomatis membatalkan pilihan sebelumnya. Klik pilihan Anda sekali lagi untuk membatalkannya.
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  // ====== KONFIGURASI ======
+  // Tempel URL Web App Google Apps Script Anda di sini setelah proses deploy.
+  // Contoh: 'https://script.google.com/macros/s/AKfycb.../exec'
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLvh3puBFzsD8ZMvcb6NMK0o8zIdqr2tr3GQ4rvo8XWnVxyxdOZBOakRCaWKGj1uB9/exec';
+
+  const MY_NAME_KEY = 'ekskul-my-name'; // disimpan di localStorage browser (perangkat masing-masing)
+
+  const gridArea = document.getElementById('gridArea');
+  const nameInput = document.getElementById('nameInput');
+  const yourPick = document.getElementById('yourPick');
+  const statusPill = document.getElementById('statusPill');
+  const toastEl = document.getElementById('toast');
+  const adminToggleBtn = document.getElementById('adminToggleBtn');
+  const adminPanel = document.getElementById('adminPanel');
+
+  let state = null;          // { activities, pendampingList, signups }
+  let busy = false;
+  let pollTimer = null;
+  let isAdmin = false;
+  let adminPassword = null;  // disimpan di memori sesi ini saja, dikirim ulang tiap aksi admin untuk diverifikasi server
+  let adminPanelVisible = false;
+
+  function showToast(msg, kind) {
+    toastEl.textContent = msg;
+    toastEl.className = 'toast show' + (kind ? ' ' + kind : '');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => { toastEl.className = 'toast'; }, 3200);
+  }
+
+  function normalize(s) {
+    return (s || '').trim().toLowerCase();
+  }
+
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function showConfigNotice() {
+    gridArea.className = '';
+    gridArea.innerHTML =
+      '<div class="admin-panel" style="border-color: var(--red);">' +
+        '<div class="admin-panel-title" style="color: var(--red);">Belum terhubung ke server</div>' +
+        '<p style="font-size:13px; line-height:1.6; margin: 8px 0 0;">' +
+        'URL Google Apps Script belum diisi. Buka file HTML ini di editor teks, cari baris ' +
+        '<code>const APPS_SCRIPT_URL = \'https://script.google.com/macros/s/AKfycbxLvh3puBFzsD8ZMvcb6NMK0o8zIdqr2tr3GQ4rvo8XWnVxyxdOZBOakRCaWKGj1uB9/exec\';</code> di dalam tag &lt;script&gt;, ' +
+        'lalu ganti dengan URL Web App hasil deploy Google Apps Script Anda.' +
+        '</p>' +
+      '</div>';
+    statusPill.textContent = 'belum terhubung';
+  }
+
+  // ====== KOMUNIKASI DENGAN SERVER (Google Apps Script) ======
+
+  async function apiGet() {
+    const res = await fetch(APPS_SCRIPT_URL, { method: 'GET' });
+    if (!res.ok) throw new Error('Server merespons status ' + res.status);
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'Gagal memuat data dari server.');
+    return json.data;
+  }
+
+  // text/plain dipakai supaya browser tidak mengirim preflight CORS OPTIONS,
+  // yang tidak didukung Google Apps Script Web App secara default.
+  async function apiPost(payload) {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Server merespons status ' + res.status);
+    return res.json();
+  }
+
+  function loadMyName() {
+    try {
+      const saved = localStorage.getItem(MY_NAME_KEY);
+      if (saved) nameInput.value = saved;
+    } catch (e) { /* localStorage tidak tersedia, abaikan */ }
+  }
+
+  function saveMyName(name) {
+    try { localStorage.setItem(MY_NAME_KEY, name); } catch (e) { /* abaikan */ }
+  }
+
+  function populateNameOptions() {
+    nameInput.innerHTML = '<option value="" disabled selected>-- Pilih nama Anda --</option>';
+    (state.pendampingList || []).forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n;
+      nameInput.appendChild(opt);
+    });
+  }
+
+  function findMyActivity(name) {
+    const n = normalize(name);
+    if (!n || !state) return null;
+    for (const actId of Object.keys(state.signups)) {
+      if (state.signups[actId].some(entry => normalize(entry.name) === n)) return actId;
+    }
+    return null;
+  }
+
+  // ====== RENDER TAMPILAN UTAMA ======
+
+  function render() {
+    if (!state) return;
+    const myName = nameInput.value;
+    const myActId = findMyActivity(myName);
+
+    const totalCap = state.activities.reduce((s, a) => s + a.capacity, 0);
+    const totalFilled = Object.values(state.signups).reduce((s, list) => s + list.length, 0);
+    statusPill.textContent = totalFilled + ' / ' + totalCap + ' slot terisi';
+
+    if (myActId) {
+      const act = state.activities.find(a => a.id === myActId);
+      yourPick.innerHTML = 'Pilihan Anda: <strong>' + act.name + '</strong>';
+    } else {
+      yourPick.textContent = normalize(myName) ? 'Anda belum memilih kegiatan' : 'Pilih nama Anda di dropdown untuk mulai memilih';
+    }
+
+    gridArea.innerHTML = '';
+    gridArea.className = 'grid';
+
+    state.activities.forEach(act => {
+      const list = state.signups[act.id] || [];
+      const isFull = list.length >= act.capacity;
+      const isMine = act.id === myActId;
+
+      const card = document.createElement('div');
+      card.className = 'card' + (isMine ? ' is-mine' : '') + (isFull ? ' is-full' : '');
+
+      const myIndex = list.findIndex(e => normalize(e.name) === normalize(myName));
+      const dots = Array.from({ length: act.capacity }).map((_, i) => {
+        const filled = i < list.length;
+        const dotIsMine = filled && isMine && i === myIndex;
+        return '<span class="slot-dot' + (filled ? ' filled' : '') + (dotIsMine ? ' mine' : '') + '"></span>';
+      }).join('');
+
+      const chips = list.map(e => {
+        const mine = normalize(e.name) === normalize(myName) && myName.trim() !== '';
+        return '<span class="chip' + (mine ? ' mine' : '') + '">' + escapeHtml(e.name) + '</span>';
+      }).join('');
+
+      let btnLabel, btnClass, btnDisabled = false;
+      if (isMine) {
+        btnLabel = 'Pilihan Anda \u2713 (klik untuk batal)';
+        btnClass = 'mine';
+      } else if (isFull) {
+        btnLabel = 'Kuota Penuh';
+        btnClass = 'full';
+        btnDisabled = true;
+      } else {
+        btnLabel = 'Pilih Kegiatan Ini';
+        btnClass = '';
+      }
+
+      card.innerHTML =
+        '<div class="card-top">' +
+          '<div>' +
+            '<div class="card-name">' + escapeHtml(act.name) + '</div>' +
+            '<div class="card-desc">' + escapeHtml(act.desc || '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="slots">' + dots + '</div>' +
+        '<div class="count-label">' + list.length + ' / ' + act.capacity + ' pendamping</div>' +
+        '<div class="roster">' + (chips || '<span class="count-label">Belum ada pendamping</span>') + '</div>' +
+        '<button class="pick-btn ' + btnClass + '" ' + (btnDisabled ? 'disabled' : '') + '>' + btnLabel + '</button>';
+
+      card.querySelector('button').addEventListener('click', () => handlePick(act.id));
+      gridArea.appendChild(card);
+    });
+
+    renderAdminPanel();
+  }
+
+  // ====== AKSI PENDAMPING (pilih / batal) ======
+
+  async function handlePick(activityId) {
+    const name = nameInput.value.trim();
+    if (!name) {
+      showToast('Pilih nama Anda terlebih dahulu.', 'err');
+      nameInput.focus();
+      return;
+    }
+    if (busy) return;
+    busy = true;
+    render();
+
+    try {
+      const currentActId = findMyActivity(name);
+      let result;
+
+      if (currentActId === activityId) {
+        result = await apiPost({ action: 'cancel', name: name });
+      } else {
+        result = await apiPost({ action: 'pick', name: name, activityId: activityId });
+      }
+
+      if (result.data) state = Object.assign({}, state, result.data);
+
+      if (!result.ok) {
+        showToast(result.error || 'Gagal memproses pilihan.', 'err');
+      } else {
+        showToast(currentActId === activityId ? 'Pilihan dibatalkan.' : 'Pilihan berhasil disimpan.', 'ok');
+        saveMyName(name);
+      }
+      render();
+    } catch (e) {
+      console.error(e);
+      showToast('Terjadi kesalahan: ' + (e && e.message ? e.message : 'coba lagi.'), 'err');
+    }
+    busy = false;
+  }
+
+  async function refreshFromServer() {
+    try {
+      const data = await apiGet();
+      const firstLoad = !state;
+      state = data;
+      if (firstLoad) populateNameOptions();
+      render();
+    } catch (e) {
+      console.error('Gagal memuat data', e);
+      if (!state) {
+        gridArea.className = '';
+        gridArea.innerHTML = '<div class="admin-panel" style="border-color: var(--red);">' +
+          '<div class="admin-panel-title" style="color: var(--red);">Gagal terhubung ke server</div>' +
+          '<p style="font-size:13px; line-height:1.6; margin: 8px 0 0;">' + escapeHtml(e.message || String(e)) + '</p>' +
+          '</div>';
+      }
+    }
+  }
+
+  // ====== PANEL ADMIN ======
+
+  function renderAdminPanel() {
+    if (!adminPanelVisible) {
+      adminPanel.className = 'admin-panel hidden';
+      return;
+    }
+    adminPanel.className = 'admin-panel';
+
+    if (!isAdmin) {
+      adminPanel.innerHTML =
+        '<div class="admin-panel-head"><div class="admin-panel-title">Masuk sebagai Admin</div></div>' +
+        '<div class="admin-login">' +
+          '<input type="password" id="adminPwInput" placeholder="Kata sandi admin">' +
+          '<button id="adminLoginBtn">Masuk</button>' +
+        '</div>' +
+        '<div class="admin-err" id="adminErr"></div>';
+
+      const pwInput = document.getElementById('adminPwInput');
+      const loginBtn = document.getElementById('adminLoginBtn');
+      const doLogin = async () => {
+        const pw = pwInput.value;
+        loginBtn.disabled = true;
+        try {
+          const result = await apiPost({ action: 'adminLogin', password: pw });
+          if (result.ok) {
+            isAdmin = true;
+            adminPassword = pw;
+            renderAdminPanel();
+          } else {
+            document.getElementById('adminErr').textContent = 'Kata sandi salah.';
+          }
+        } catch (e) {
+          document.getElementById('adminErr').textContent = 'Gagal menghubungi server: ' + (e.message || e);
+        }
+        loginBtn.disabled = false;
+      };
+      loginBtn.addEventListener('click', doLogin);
+      pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+      pwInput.focus();
+      return;
+    }
+
+    if (!state) {
+      adminPanel.innerHTML = '<div class="admin-panel-title">Memuat data...</div>';
+      return;
+    }
+
+    let html =
+      '<div class="admin-panel-head">' +
+        '<div class="admin-panel-title">Panel Admin &middot; Kelola Pilihan Pendamping</div>' +
+        '<button class="admin-logout-btn" id="adminLogoutBtn" type="button">Keluar</button>' +
+      '</div>';
+
+    state.activities.forEach(act => {
+      const list = state.signups[act.id] || [];
+      html += '<div class="admin-activity-block">' +
+        '<div class="admin-activity-name">' + escapeHtml(act.name) + ' (' + list.length + '/' + act.capacity + ')</div>';
+
+      if (list.length === 0) {
+        html += '<div class="admin-empty-row">Belum ada pendamping.</div>';
+      } else {
+        list.forEach(entry => {
+          const otherOptions = state.activities
+            .filter(a => a.id !== act.id)
+            .map(a => {
+              const full = (state.signups[a.id] || []).length >= a.capacity;
+              return '<option value="' + a.id + '"' + (full ? ' disabled' : '') + '>' +
+                escapeHtml(a.name) + (full ? ' (penuh)' : '') + '</option>';
+            }).join('');
+
+          html += '<div class="admin-row" data-activity="' + act.id + '" data-name="' + escapeHtml(entry.name) + '">' +
+            '<div class="admin-row-name">' + escapeHtml(entry.name) + '</div>' +
+            '<select class="admin-move-select">' +
+              '<option value="">Pindahkan ke...</option>' +
+              otherOptions +
+            '</select>' +
+            '<button class="danger-btn admin-remove-btn" type="button">Hapus</button>' +
+          '</div>';
+        });
+      }
+      html += '</div>';
+    });
+
+    adminPanel.innerHTML = html;
+
+    document.getElementById('adminLogoutBtn').addEventListener('click', () => {
+      isAdmin = false;
+      adminPassword = null;
+      renderAdminPanel();
+    });
+
+    adminPanel.querySelectorAll('.admin-remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const row = btn.closest('.admin-row');
+        adminRemove(row.dataset.name);
+      });
+    });
+
+    adminPanel.querySelectorAll('.admin-move-select').forEach(sel => {
+      sel.addEventListener('change', () => {
+        const row = sel.closest('.admin-row');
+        const targetId = sel.value;
+        if (!targetId) return;
+        adminMove(row.dataset.name, targetId);
+      });
+    });
+  }
+
+  async function adminRemove(name) {
+    if (busy) return;
+    busy = true;
+    try {
+      const result = await apiPost({ action: 'adminRemove', name: name, password: adminPassword });
+      if (result.data) state = result.data;
+      if (!result.ok) {
+        showToast(result.error || 'Gagal menghapus pilihan.', 'err');
+      } else {
+        showToast('Pilihan "' + name + '" berhasil dihapus.', 'ok');
+      }
+      render();
+    } catch (e) {
+      console.error(e);
+      showToast('Gagal menghapus pilihan: ' + (e.message || e), 'err');
+    }
+    busy = false;
+  }
+
+  async function adminMove(name, toId) {
+    if (busy) return;
+    busy = true;
+    try {
+      const result = await apiPost({ action: 'adminMove', name: name, toId: toId, password: adminPassword });
+      if (result.data) state = result.data;
+      if (!result.ok) {
+        showToast(result.error || 'Gagal memindahkan pilihan.', 'err');
+      } else {
+        showToast('Pilihan "' + name + '" berhasil dipindahkan.', 'ok');
+      }
+      render();
+    } catch (e) {
+      console.error(e);
+      showToast('Gagal memindahkan pilihan: ' + (e.message || e), 'err');
+    }
+    busy = false;
+  }
+
+  // ====== EVENT & INISIALISASI ======
+
+  nameInput.addEventListener('change', () => {
+    render();
+    if (nameInput.value.trim()) saveMyName(nameInput.value.trim());
+  });
+
+  adminToggleBtn.addEventListener('click', () => {
+    adminPanelVisible = !adminPanelVisible;
+    renderAdminPanel();
+  });
+
+  (function init() {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PASTE_URL') !== -1) {
+      showConfigNotice();
+      return;
+    }
+    loadMyName();
+    refreshFromServer();
+    pollTimer = setInterval(refreshFromServer, 5000);
+  })();
+})();
+</script>
+</body>
+</html>
